@@ -1,95 +1,95 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
-#include <fcntl.h>
 #include <sys/inotify.h>
-#include <pthread.h>
+#include <fcntl.h>
 #include <errno.h>
+#include <limits.h>  // Include for NAME_MAX
 
-#define EVENT_SIZE (sizeof(struct inotify_event))
-#define EVENT_BUF_LEN (1024 * (EVENT_SIZE + 16))
-#define BUFFER_SIZE 1024
+#define BUF_LEN (10 * (sizeof(struct inotify_event) + NAME_MAX + 1))
 
-void *read_file(void *arg) {
-    FILE *input = fopen("input.txt", "r");
-    FILE *output = fopen("output.txt", "a");
-    char *line = NULL;
-    size_t len = 0;
-    ssize_t read;
-
-    if (input == NULL || output == NULL) {
-        perror("fopen");
-        return NULL;
-    }
-
-    fseek(input, 0, SEEK_END);
-    long last_pos = ftell(input);
-    fseek(input, last_pos, SEEK_SET);
-
-    while ((read = getline(&line, &len, input)) != -1) {
-        fwrite(line, sizeof(char), read, output);
-    }
-
-    fclose(input);
-    fclose(output);
-    if (line) {
-        free(line);
-    }
-
-    return NULL;
-}
-
-void *monitor_file(void *arg) {
-    int length, i = 0;
-    int fd;
-    int wd;
-    char buffer[EVENT_BUF_LEN];
-
-    fd = inotify_init();
-    if (fd < 0) {
-        perror("inotify_init");
-        return NULL;
-    }
-
-    wd = inotify_add_watch(fd, "input.txt", IN_MODIFY);
+void handle_events(int inotify_fd, const char *filename) {
+    char buf[BUF_LEN] __attribute__((aligned(8)));
 
     while (1) {
-        length = read(fd, buffer, EVENT_BUF_LEN);
-        if (length < 0) {
-            perror("read");
+        printf("fewf\n");
+        ssize_t num_read = read(inotify_fd, buf, BUF_LEN);
+        if (num_read == -1) {
+            if (errno != EAGAIN) {
+                perror("read");
+            }
+            continue;
         }
 
-        while (i < length) {
-            struct inotify_event *event = (struct inotify_event *)&buffer[i];
-            if (event->len) {
-                if (event->mask & IN_MODIFY) {
-                    printf("The file %s was modified.\n", event->name);
-                    // Trigger asynchronous read and write
-                    pthread_t read_thread;
-                    pthread_create(&read_thread, NULL, read_file, NULL);
+        for (char *ptr = buf; ptr < buf + num_read; ) {
+            printf("susu\n");
+            struct inotify_event *event = (struct inotify_event *) ptr;
+
+            if (event->mask & IN_MODIFY) {
+                printf("File %s modified\n", filename);
+
+                // Asynchronously read the file content
+                int file_fd = open(filename, O_RDONLY | O_NONBLOCK);
+                if (file_fd == -1) {
+                    perror("open");
+                    continue;
                 }
+
+                char buffer[1024];
+                ssize_t bytes_read;
+                FILE *output_file = fopen("output.txt", "a"); // Open file in append mode
+                if (!output_file) {
+                    perror("output.txt");
+                    close(file_fd);
+                    continue;
+                }
+
+                while ((bytes_read = read(file_fd, buffer, sizeof(buffer) - 1)) > 0) {
+                    buffer[bytes_read] = '\0';
+                    fprintf(output_file, "%s", buffer); // Write to output.txt
+                }
+
+                if (bytes_read == -1) {
+                    perror("read");
+                }
+
+                fclose(output_file);
+                close(file_fd);
             }
-            i += EVENT_SIZE + event->len;
+
+            ptr += sizeof(struct inotify_event) + event->len;
         }
     }
-
-    inotify_rm_watch(fd, wd);
-    close(fd);
-
-    return NULL;
 }
 
+int main(int argc, char *argv[]) {
+    if (argc < 2) {
+        fprintf(stderr, "Usage: %s <file>\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
 
-int main() {
-    pthread_t monitor_thread;
+    // Initialize inotify
+    int inotify_fd = inotify_init();
+    if (inotify_fd == -1) {
+        perror("inotify_init");
+        exit(EXIT_FAILURE);
+    }
 
-    // Start monitoring the file in a separate thread
-    pthread_create(&monitor_thread, NULL, monitor_file, NULL);
+    // Add watch for the specified file
+    int watch_fd = inotify_add_watch(inotify_fd, argv[1], IN_MODIFY | IN_DELETE_SELF | IN_MOVE_SELF);
+    if (watch_fd == -1) {
+        perror("inotify_add_watch");
+        close(inotify_fd);
+        exit(EXIT_FAILURE);
+    }
 
-    // Keep the main thread running to allow monitoring
-    pthread_join(monitor_thread, NULL);
+    // Handle events asynchronously
+    handle_events(inotify_fd, argv[1]);
 
-    return 0;
+    // Cleanup
+    close(watch_fd);
+    close(inotify_fd);
+
+    exit(EXIT_SUCCESS);
 }
 

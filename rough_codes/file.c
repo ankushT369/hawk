@@ -1,38 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct {
-    char* key;
-    char* value;
-} mapping;
-
-int main(int argc, char *argv[]) {  
-    mapping *mp;
-
-    FILE *stream;
-    char *line = NULL;
-    size_t len = 0;
-    ssize_t nread;
-
-    if (argc != 2) {
-       fprintf(stderr, "Usage: %s <file>\n", argv[0]);
-       exit(EXIT_FAILURE);
+long get_char_offset(const char *filename, char target) {
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        perror("Error opening file");
+        return -1;
     }
 
-    stream = fopen(argv[1], "r");
-    if (stream == NULL) {
-       perror("fopen");
-       exit(EXIT_FAILURE);
+    long offset = -1;
+    char c;
+    while ((c = fgetc(file)) != EOF) {
+        if (c == target) {
+            offset = ftell(file) - 1; // Subtract 1 because ftell gives the position after fgetc
+            break;
+        }
     }
 
-    while ((nread = getline(&line, &len, stream)) != -1) {
-        printf("%s\n", *line[0]);
-        printf("Retrieved line of length %zd:\n", nread);
-        fwrite(line, nread, 1, stdout);
+    fclose(file);
+    return offset;
+}
+
+int main() {
+    const char *filename = "test.txt";
+    char target = 'q';
+    
+    long offset = get_char_offset(filename, target);
+    if (offset != -1) {
+        printf("Character '%c' found at offset: %#lx\n", target, offset);
+    } else {
+        printf("Character '%c' not found in the file.\n", target);
     }
 
-    free(line);
-    fclose(stream);
-    exit(EXIT_SUCCESS);
+    return 0;
 }
 
