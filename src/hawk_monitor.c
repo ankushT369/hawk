@@ -13,8 +13,6 @@ struct inotify_descriptors d_instance;
 /* File monitoring gets initialised */
 void hawk_monitoring_service_init() {
     /* */
-
-    /* */
     d_instance._fd = inotify_init1();
 
     /* */
