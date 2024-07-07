@@ -1,3 +1,7 @@
+#directories
+rough_codes
+
+
 # Prerequisites
 *.d
 
@@ -50,4 +54,3 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
-rough_codes/
