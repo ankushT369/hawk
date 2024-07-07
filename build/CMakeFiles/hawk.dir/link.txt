@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/hawk.dir/src/hawk_monitor.c.o CMakeFiles/hawk.dir/src/main.c.o -o hawk 

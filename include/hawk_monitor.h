@@ -4,7 +4,7 @@
 /* inotify will be used for the monitoring of the /var/log/apt/history.log */
 
 #include <limits.h>
-
+#include <sys/inotify.h>
 
 struct inotify_descriptors {
     int _fd;
@@ -25,14 +25,8 @@ struct inotify_descriptors {
 #define FILENAME "var/log/apt/history.log"
 
 
-char event_buffer[BUFFER_LEN] __attribute__((aligned(8)));              // buffer to hold the inotify event
-
-
-
-
-
 void hawk_monitoring_service_init();
-void hawk_monitoring_event_handler(const char* _filename);
+void hawk_monitoring_event_handler(struct inotify_descriptors, const char* _filename);
 
 
 
