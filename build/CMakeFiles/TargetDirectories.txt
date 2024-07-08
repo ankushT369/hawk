@@ -1,3 +1,0 @@
-/home/ankush/hawk/build/CMakeFiles/hawk.dir
-/home/ankush/hawk/build/CMakeFiles/edit_cache.dir
-/home/ankush/hawk/build/CMakeFiles/rebuild_cache.dir
