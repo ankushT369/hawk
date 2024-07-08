@@ -31,7 +31,7 @@ Nagivate to build/ directory
 
 Now Run : 
 
-```$cmake ../```
+```$ cmake ../```
 
 Next :
 
