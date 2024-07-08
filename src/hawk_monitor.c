@@ -19,7 +19,7 @@ void hawk_monitoring_service_init() {
 
     /* */
     d_instance._wd = inotify_add_watch(d_instance._fd, FILENAME, IN_MODIFY);
-    
+
 
     hawk_monitoring_event_handler(d_instance, FILENAME);
          
@@ -37,7 +37,7 @@ void hawk_monitoring_event_handler(struct inotify_descriptors, const char* _file
 
         for(char* ptr = event_buffer; ptr < event_buffer + event_bytes; ) {
 
-            struct inotify_event* event = (struct inotify_event*)(ptr);
+            struct inotify_event* event = (struct inotify_event*) ptr;
 
             if(event -> mask & IN_MODIFY) {
                 printf("File : %s modified\n", FILENAME); 
@@ -47,6 +47,9 @@ void hawk_monitoring_event_handler(struct inotify_descriptors, const char* _file
         }
 
     }
+
+    close(d_instance._fd);
+    close(d_instance._wd);
 
 }
 

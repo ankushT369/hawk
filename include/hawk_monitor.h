@@ -22,7 +22,7 @@ struct inotify_descriptors {
 
 #define BUFFER_LEN (10 * (sizeof(struct inotify_event) + NAME_MAX + 1))
 
-#define FILENAME "var/log/apt/history.log"
+#define FILENAME "/var/log/apt/history.log"
 
 
 void hawk_monitoring_service_init();
