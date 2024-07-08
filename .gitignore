@@ -1,5 +1,5 @@
-#directories
-rough_codes
+# Build directories
+build/
 
 
 # Prerequisites
@@ -39,7 +39,6 @@ rough_codes
 *.i*86
 *.x86_64
 *.hex
-hawk
 
 # Debug files
 *.dSYM/
