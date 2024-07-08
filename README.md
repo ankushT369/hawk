@@ -40,8 +40,3 @@ Next :
 ```$ ./hawk```
 
 
-## Tech Stack
-
-- C99
-- Cmake
-
