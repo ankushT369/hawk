@@ -47,11 +47,6 @@ typedef enum {
 
 /*  struct definition : 
  *
- *
- *
- *
- *
- *
  */
 
 struct hawk_installation_chunk {
@@ -70,6 +65,34 @@ struct hawk_installation_chunk {
     /* recored the final timestamp */
     struct tm final_timestamp;        
 };
+
+
+
+/* Struct : Package manager information
+ *
+ */
+struct pm_info {
+    const char* release_file;
+    const char* package_manager;
+};
+
+
+
+/* Array of structs mapping release files to package managers */
+struct pm_info info_inst [] = {
+    {"/etc/redhat-release", "yum"},
+    {"/etc/arch-release", "pacman"},
+    {"/etc/gentoo-release", "emerge"},
+    {"/etc/SuSE-release", "zypp"},
+    {"/etc/debian_version", "apt"},
+    {"/etc/alpine-release", "apk"},
+};
+
+extern const char* package;
+
+const char* fetch_package_manager();
+
+
 
 
 
