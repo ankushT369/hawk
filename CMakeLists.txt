@@ -13,6 +13,6 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 include_directories(include)
 
 # Add the executable target
-add_executable(hawk src/hawk_monitor.c src/main.c)
+add_executable(hawk src/hawk_monitor.c src/main.c src/hawk_log.c)
 
 

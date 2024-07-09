@@ -4,12 +4,14 @@
 #include <stdbool.h>
 
 #include "hawk_monitor.h"
-
+#include "hawk_log.h"
 
 
 /* Struct to hold the file and watch descriptors */
 struct inotify_descriptors d_instance;
 
+
+const uint32_t watch_mask = IN_MODIFY;
 
 
 /* File monitoring gets initialised */
@@ -18,7 +20,7 @@ void hawk_monitoring_service_init() {
     d_instance._fd = inotify_init();
 
     /* */
-    d_instance._wd = inotify_add_watch(d_instance._fd, FILENAME, IN_MODIFY);
+    d_instance._wd = inotify_add_watch(d_instance._fd, FILENAME, watch_mask);
 
 
     hawk_monitoring_event_handler(d_instance, FILENAME);
@@ -28,6 +30,8 @@ void hawk_monitoring_service_init() {
 
 void hawk_monitoring_event_handler(struct inotify_descriptors, const char* _filename) {
     bool run = true;
+
+    pr_msg("Monitoring Started...\n");
 
     char event_buffer[BUFFER_LEN] __attribute__((aligned(8)));              // buffer to hold the inotify event
 

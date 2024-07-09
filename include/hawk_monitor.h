@@ -5,6 +5,7 @@
 
 #include <limits.h>
 #include <sys/inotify.h>
+#include <stdbool.h>
 
 struct inotify_descriptors {
     int _fd;
