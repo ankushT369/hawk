@@ -37,9 +37,11 @@ typedef enum {
 
 typedef enum {
     INSTALL, 
+    /*
     UPGRADE,
     REMOVE,
     PURGE,
+    */
     UNEXPECTED
 } hawk_installation_request;
 

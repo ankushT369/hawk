@@ -1,7 +1,0 @@
-#ifndef HAWK_SIGNAL_HANDLER_H
-#define HAWK_SIGNAL_HANDLER_H
-
-
-
-
-#endif // HAWK_SIGNAL_HANDLER_H

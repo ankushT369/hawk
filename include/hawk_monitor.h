@@ -26,8 +26,8 @@ struct inotify_descriptors {
 #define FILENAME "/var/log/apt/history.log"
 
 
-void hawk_monitoring_service_init();
-void hawk_monitoring_event_handler(struct inotify_descriptors, const char* _filename);
+void monitoring_service_init();
+void monitoring_event_handler(struct inotify_descriptors, const char* _filename);
 
 
 
