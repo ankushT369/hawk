@@ -7,6 +7,7 @@
 
 #include "hawk_monitor.h"
 #include "hawk_log.h"
+#include "hawk.h"
 
 
 /* Struct to hold the file and watch descriptors */
@@ -22,14 +23,27 @@ const uint32_t watch_mask = IN_CLOSE_WRITE;
 
 /* File monitoring gets initialised */
 void monitoring_service_init() {
+    //pr_info("pacakage name : %s\n", package);
     /* */
     d_instance._fd = inotify_init();
 
+    char path[] = "/var/log/";
+    char file[] = "/history.log";
+
+    // Calculate total length of concatenated string (+1 for null terminator)
+    size_t total_path_len = strlen(package) + strlen(path) + strlen(file) + 1;
+
+    const char *filename = (const char *)malloc(total_path_len);
+
+    // Construct the concatenated path
+    sprintf((char *)filename, "%s%s/%s", path, package, file);
+
+    //pr_info("Concatenated path: %s\n", filename);
+
     /* */
-    d_instance._wd = inotify_add_watch(d_instance._fd, FILENAME, watch_mask);
+    d_instance._wd = inotify_add_watch(d_instance._fd, filename, watch_mask);
 
-
-    monitoring_event_handler(d_instance, FILENAME);
+    monitoring_event_handler(d_instance, filename);
          
 }
 
@@ -42,7 +56,7 @@ void monitoring_event_handler(struct inotify_descriptors, const char* _filename)
 
     char event_buffer[BUFFER_LEN] __attribute__((aligned(8)));              // buffer to hold the inotify event
 
-    fc_instance.fd = open(FILENAME, O_RDONLY);
+    fc_instance.fd = open(_filename, O_RDONLY);
 
     while(run) {
         // Move to the end of the file
@@ -55,7 +69,7 @@ void monitoring_event_handler(struct inotify_descriptors, const char* _filename)
             struct inotify_event* event = (struct inotify_event*) ptr;
 
             if(event -> mask & watch_mask) {
-                //printf("File : %s modified\n", FILENAME); 
+                //printf("File : %s modified\n", _filename); 
                 fetch_data(fc_instance);
             }
 
@@ -85,7 +99,7 @@ void fetch_data(struct file_config fc_instance) {
            // Append
             strcat(info.data, fc_instance.buffer);
         }
-        //pr_info("data : %s\n", info.data);
+        pr_info("data : %s\n", info.data);
 
     }
 

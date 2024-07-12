@@ -9,6 +9,7 @@
 #include <stdint.h>
 
 
+
 /*
  *
  *
@@ -40,9 +41,6 @@ typedef enum {
  */
 
 struct installation_chunk {
-    /* recored the intial timestamp */
-    char* initial_timestamp;        
-
     /* installation command should be copied and executed in the script */
     char* installation_command;
 
@@ -52,8 +50,6 @@ struct installation_chunk {
     /* check installation request */
     installation_request installation_request;
 
-    /* recored the final timestamp */
-    char* final_timestamp;        
 };
 
 
@@ -67,20 +63,27 @@ struct pm_info {
 };
 
 
+/* */
+extern struct pm_info pm_info_inst[]; 
 
 /* Array of structs mapping release files to package managers */
-struct pm_info info_inst [] = {
+/*
+struct pm_info pm_info_inst [] = {
     {"/etc/redhat-release", "yum"},
     {"/etc/arch-release", "pacman"},
     {"/etc/gentoo-release", "emerge"},
     {"/etc/SuSE-release", "zypp"},
     {"/etc/debian_version", "apt"},
     {"/etc/alpine-release", "apk"},
+    {NULL, NULL}
 };
+*/
+
+extern const char* monitorable_file;
 
 extern const char* package;
 
-const char* fetch_package_manager();
+void fetch_set_package_manager();
 
 
 

@@ -51,8 +51,6 @@ struct file_content {
 
 #define BUFFER_LEN (10 * (sizeof(struct inotify_event) + NAME_MAX + 1))
 
-#define FILENAME "/var/log/apt/history.log"
-
 
 void monitoring_service_init();
 void monitoring_event_handler(struct inotify_descriptors, const char* _filename);
