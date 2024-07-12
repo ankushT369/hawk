@@ -1,3 +1,4 @@
+/*
 #include <unistd.h>
 #include <stdio.h>
 
@@ -12,10 +13,11 @@ void fetch_data(struct file_config fc_instance) {
 
     while((fc_instance.bytes_read = read(fc_instance.fd, fc_instance.buffer, sizeof(fc_instance.buffer) - 1)) > 0) {
         fc_instance.buffer[fc_instance.bytes_read] = '\0';
+        printf("xx23\n");
         printf("%s", fc_instance.buffer);
     }
 
     fc_instance.curr_pos = lseek(fc_instance.fd, 0, SEEK_CUR);
 
-    //close(fc_instance.fd);
 }
+*/

@@ -7,7 +7,6 @@
 
 
 #include <stdint.h>
-#include <time.h>           // For struct tm
 
 
 /*
@@ -18,18 +17,12 @@
 typedef enum {
     USER,
     NOT_USER
-} hawk_user_request;
+} user_identify;
 
 
 /*  enumerator contains :
  *
  *  INSTALL to detect the install part
- *
- *  UPGRADE to record the upgrade part
- *
- *  PURGE to record the remove part
- *
- *  REMOVE to record the purge part
  *
  *  UNEXPECTED to detected the rest 
  *
@@ -37,13 +30,8 @@ typedef enum {
 
 typedef enum {
     INSTALL, 
-    /*
-    UPGRADE,
-    REMOVE,
-    PURGE,
-    */
-    UNEXPECTED
-} hawk_installation_request;
+    UNEXPCTED
+} installation_request;
 
 
 
@@ -51,21 +39,21 @@ typedef enum {
  *
  */
 
-struct hawk_installation_chunk {
+struct installation_chunk {
     /* recored the intial timestamp */
-    struct tm initial_timestamp;        
+    char* initial_timestamp;        
 
     /* installation command should be copied and executed in the script */
     char* installation_command;
 
-    /* */
-    hawk_user_request is_user;
+    /* check if its user */
+    user_identify is_user;
 
-    /* */
-    hawk_installation_request installation_request;
+    /* check installation request */
+    installation_request installation_request;
 
     /* recored the final timestamp */
-    struct tm final_timestamp;        
+    char* final_timestamp;        
 };
 
 

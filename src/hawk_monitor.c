@@ -2,11 +2,11 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <fcntl.h>
+#include <stdlib.h>
 #include <stdbool.h>
 
 #include "hawk_monitor.h"
 #include "hawk_log.h"
-#include "hawk_parser.h"
 
 
 /* Struct to hold the file and watch descriptors */
@@ -14,7 +14,10 @@ struct inotify_descriptors d_instance;
 
 struct file_config fc_instance;
 
-const uint32_t watch_mask = IN_MODIFY;
+struct file_content info;
+
+const uint32_t watch_mask = IN_CLOSE_WRITE;
+
 
 
 /* File monitoring gets initialised */
@@ -42,7 +45,6 @@ void monitoring_event_handler(struct inotify_descriptors, const char* _filename)
     fc_instance.fd = open(FILENAME, O_RDONLY);
 
     while(run) {
-
         // Move to the end of the file
         fc_instance.curr_pos = lseek(fc_instance.fd, 0, SEEK_END);
 
@@ -52,7 +54,7 @@ void monitoring_event_handler(struct inotify_descriptors, const char* _filename)
         for(char* ptr = event_buffer; ptr < event_buffer + event_bytes; ) {
             struct inotify_event* event = (struct inotify_event*) ptr;
 
-            if(event -> mask & IN_MODIFY) {
+            if(event -> mask & watch_mask) {
                 //printf("File : %s modified\n", FILENAME); 
                 fetch_data(fc_instance);
             }
@@ -62,8 +64,34 @@ void monitoring_event_handler(struct inotify_descriptors, const char* _filename)
 
     }
 
-    close(d_instance._fd);
-    close(d_instance._wd);
+
+}
+
+void fetch_data(struct file_config fc_instance) {
+
+    fc_instance.curr_pos = lseek(fc_instance.fd, fc_instance.curr_pos, SEEK_SET);
+
+    while((fc_instance.bytes_read = read(fc_instance.fd, fc_instance.buffer, sizeof(fc_instance.buffer) - 1)) > 0) {
+        fc_instance.buffer[fc_instance.bytes_read] = '\0';
+
+        info.size += fc_instance.bytes_read + 1; // +1 for the null terminator
+        info.data = realloc(info.data, info.size);
+
+        //pr_info("%s", fc_instance.buffer);
+        if (info.size == fc_instance.bytes_read + 1) {
+            // First allocation
+            strcpy(info.data, fc_instance.buffer);
+        } else {
+           // Append
+            strcat(info.data, fc_instance.buffer);
+        }
+        //pr_info("data : %s\n", info.data);
+
+    }
+
+    fc_instance.curr_pos = lseek(fc_instance.fd, 0, SEEK_CUR);
+
+    /* thread implementation to parse content */
 
 }
 
