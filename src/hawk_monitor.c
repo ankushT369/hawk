@@ -28,7 +28,7 @@ void monitoring_service_init() {
     d_instance._fd = inotify_init();
 
     char path[] = "/var/log/";
-    char file[] = "/history.log";
+    char file[] = "history.log";
 
     // Calculate total length of concatenated string (+1 for null terminator)
     size_t total_path_len = strlen(package) + strlen(path) + strlen(file) + 1;
@@ -38,7 +38,7 @@ void monitoring_service_init() {
     // Construct the concatenated path
     sprintf((char *)filename, "%s%s/%s", path, package, file);
 
-    //pr_info("Concatenated path: %s\n", filename);
+    pr_info("Concatenated path: %s\n", filename);
 
     /* */
     d_instance._wd = inotify_add_watch(d_instance._fd, filename, watch_mask);
