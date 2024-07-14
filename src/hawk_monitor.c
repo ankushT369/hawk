@@ -10,9 +10,7 @@
 #include "hawk.h"
 
 
-/* Struct to hold the file and watch descriptors */
-struct inotify_descriptors d_instance;
-
+/* Struct to hold the file configuration */
 struct file_config fc_instance;
 
 struct file_content info;
@@ -24,6 +22,7 @@ const uint32_t watch_mask = IN_CLOSE_WRITE;
 /* File monitoring gets initialised */
 void monitoring_service_init() {
     //pr_info("pacakage name : %s\n", package);
+    struct inotify_descriptors d_instance;
     /* */
     d_instance._fd = inotify_init();
 
