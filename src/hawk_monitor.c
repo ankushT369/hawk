@@ -48,7 +48,7 @@ void monitoring_service_init() {
 }
 
 
-void monitoring_event_handler(struct inotify_descriptors, const char* _filename) {
+void monitoring_event_handler(struct inotify_descriptors d_instance, const char* _filename) {
     // Later make it control flag
     bool run = true;
 
