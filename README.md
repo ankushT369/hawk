@@ -3,7 +3,7 @@
   <img src="https://github.com/ankushT369/hawk/blob/main/docs/hawk-img5.png" alt="Example Image">
 </p>
 
-A scalable binary reinstaller and life logs maintainer
+A scalable binary reinstaller and life long logs maintainer
 
 
 ## Contributor's Guide
