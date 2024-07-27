@@ -31,6 +31,8 @@ typedef enum {
 
 typedef enum {
     INSTALL, 
+    PURGE,
+    REMOVE,
     UNEXPCTED
 } installation_request;
 
