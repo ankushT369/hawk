@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.22.1)
 
 # Project name
-project(hawk VERSION 0.0)
+project(hawk VERSION 1.0)
 
 # Specify the standard
 set(CMAKE_C_STANDARD 99)
