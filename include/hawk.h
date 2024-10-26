@@ -68,19 +68,6 @@ struct pm_info {
 /* */
 extern struct pm_info pm_info_inst[]; 
 
-/* Array of structs mapping release files to package managers */
-/*
-struct pm_info pm_info_inst [] = {
-    {"/etc/redhat-release", "yum"},
-    {"/etc/arch-release", "pacman"},
-    {"/etc/gentoo-release", "emerge"},
-    {"/etc/SuSE-release", "zypp"},
-    {"/etc/debian_version", "apt"},
-    {"/etc/alpine-release", "apk"},
-    {NULL, NULL}
-};
-*/
-
 extern const char* monitorable_file;
 
 extern const char* package;

@@ -1,7 +1,6 @@
 #include <stddef.h>
 #include <unistd.h>
 
-
 #include "hawk.h"
 #include "hawk_monitor.h"
 #include "hawk_log.h"
@@ -25,7 +24,7 @@ const char* package = NULL;
 /* Function fetch the package manager */
 void fetch_set_package_manager() {
     for(int i = 0; pm_info_inst[i].release_file != NULL; i++) {
-        /* access checks whether the path is valid */
+        // access checks whether the path is valid
         if(access(pm_info_inst[i].release_file, F_OK) == 0) {
             package = pm_info_inst[i].package_manager;
         }

@@ -1,12 +1,11 @@
 #ifndef HAWK_MONITOR_H
 #define HAWK_MONITOR_H
 
-/* inotify will be used for the monitoring of the /var/log/apt/history.log */
+/* inotify will be used for the monitoring of the /var/log/<package-manager>/history.log */
 #include <limits.h>
 #include <sys/inotify.h>
 #include <sys/types.h>
 #include <stdbool.h>
-
 
 
 struct inotify_descriptors {
@@ -19,25 +18,15 @@ struct file_config {
     /* File descriptor of monitoring file */
     int fd;
 
-    /* */
     char buffer[4096];
-    
-    /* */
     size_t bytes_read;
-
-    /* */
     off_t curr_pos;
-
-    /* */
     int whence;
 };
 
 
 struct file_content {
-    /* */
     char* data;
-
-    /* */
     size_t size;
 };
 
